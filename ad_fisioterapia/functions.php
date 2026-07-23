@@ -808,6 +808,9 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'spectra-frontend-css',       // Spectra frontend
         'starter-starter-templates-css', // Spectra
         'uagb-block-positioning-css', // Spectra block positioning
+        'wp-block-library',           // WP core blocks CSS (not critical)
+        'wp-block-library-theme',     // WP core blocks theme CSS
+        'global-styles',              // WP global styles (theme.json)
     );
 
     // Also defer based on URL patterns for handles we might not know
@@ -818,6 +821,9 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'swiper-bundle.min.css',
         'slick.min.css',
         'spectra-block-positioning',
+        '/uag-css-',                  // Spectra/UAG per-page generated CSS
+        '/eb-reusable-',              // Essential Blocks reusable block CSS
+        'style-blocks.css',           // WP core dist/style-blocks.css
     );
 
     $should_defer = in_array( $handle, $defer_handles, true );
