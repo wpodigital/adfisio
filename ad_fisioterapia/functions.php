@@ -77,13 +77,6 @@ function ad_fisioterapia_enqueue() {
 
 	// Extra CSS
 	wp_enqueue_style(
-		'owlcarousel',
-		$child_uri . '/assets/css/build/owl.carousel.css',
-		array( 'ad-fisioterapia-style' ),
-		'1.0'
-	);
-
-	wp_enqueue_style(
 		'ad_fisioterapia',
 		$child_uri . '/assets/css/build/main.min.css',
 		array( 'ad-fisioterapia-style' ),
@@ -94,14 +87,6 @@ function ad_fisioterapia_enqueue() {
 	wp_enqueue_script(
 		'bootstrap-bundle',
 		$child_uri . '/assets/css/src/bootstrap/dist/js/bootstrap.bundle.min.js',
-		array( 'jquery' ),
-		'1.0',
-		true
-	);
-
-	wp_enqueue_script(
-		'owlcarousel',
-		$child_uri . '/assets/js/build/owl.carousel.min.js',
 		array( 'jquery' ),
 		'1.0',
 		true
@@ -718,7 +703,7 @@ function remove_jquery_migrate( $scripts ) {
 
 	$deps = array_diff( $deps, [ 'jquery-migrate' ] );
 }
-//BOOTSTRAP ICONS ELIMINAR Y NUNITO SANS
+//NUNITO SANS FONT OVERRIDE
 add_action( 'wp_enqueue_scripts', 'add_font_override_css', 999 );
 function add_font_override_css() {
     $child_uri = get_stylesheet_directory_uri();
@@ -747,9 +732,6 @@ function add_font_override_css() {
         body, .body-normal, p, h1, h2, h3, h4, h5, h6 {
             font-family: "Nunito Sans", "BodyNormal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
         }
-        
-        /* Si bootstrap-icons no es crítico, ocultarlo */
-        /* [class^="bi-"]:before { content: "" !important; } */
     ' );
 }
 
