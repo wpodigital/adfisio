@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+<meta charset="<?php bloginfo( 'charset' ); ?>">
+<meta name="viewport" content="width=device-width">
+
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+<?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+	<?php wp_body_open(); ?>
+	<div id="wrapper" class="hfeed">
+		<header id="header" role="banner">
+			<div class="container container-header">
+				<div id="branding">
+					<a href="<?php echo esc_url(home_url('/')); ?>">
+						<img src="<?php echo get_stylesheet_directory_uri() ?>/assets/img/logo.svg" alt="<?php echo get_bloginfo('name'); ?>"/>
+					</a>
+				</div>
+				<nav id="menu" role="navigation" itemscope itemtype="https://schema.org/SiteNavigationElement">
+					<?php wp_nav_menu( array( 'theme_location' => 'main-menu', 'link_before' => '<span itemprop="name">', 'link_after' => '</span>' ) ); ?>
+				</nav>
+				<nav id="menu-mobile" class="navbar" role="navigation" itemscope>
+					<a class="navbar-brand" href="#">Navbar</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<!-- <span class="navbar-toggler-icon"></span> -->
+						<i class="bi bi-list"></i>
+					</button>
+					<?php wp_nav_menu( array( 'theme_location' => 'mobile-menu', 'link_before' => '<span itemprop="name">', 'link_after' => '</span>' ) ); ?>
+				</nav>
+			</div>
+		</header>
+		<div id="container">
+			<main id="content" role="main">

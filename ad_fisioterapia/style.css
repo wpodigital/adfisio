@@ -1,0 +1,229 @@
+/*
+Theme Name: AD Fisioterapia Child
+Author: Acceseo
+Author URI: https://www.acceseo.com
+Description: Theme child para la web de AD Fisioterapia
+Version: 1.0.0
+License: GNU General Public License v3 or Later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: ad_fisioterapia
+Template: blankslate
+*/
+
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;}html{scroll-behavior:smooth}body{line-height:1}a{text-decoration-skip-ink:auto}a[href^="tel"]{color:inherit;text-decoration:none}button{outline:0}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}q{display:inline;font-style:italic}q:before{content:'"';font-style:normal}q:after{content:'"';font-style:normal}textarea,input[type="text"],input[type="button"],input[type="submit"],input[type="reset"],input[type="search"],input[type="password"]{-webkit-appearance:none;appearance:none;border-radius:0}input[type="search"]{-webkit-appearance:textfield}table{border-collapse:collapse;border-spacing:0}th,td{padding:2px}big{font-size:120%}small,sup,sub{font-size:80%}sup{vertical-align:super}sub{vertical-align:sub}dd{margin-left:20px}kbd,tt{font-family:courier;font-size:12px}ins{text-decoration:underline}del,strike,s{text-decoration:line-through}dt{font-weight:bold}address,cite,var{font-style:italic}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.sticky{}.bypostauthor{}.wp-caption{}.wp-caption-text{}.gallery-caption{}.alignright{}.alignleft{}.aligncenter{}
+.screen-reader-text{border:0;clip:rect(1px,1px,1px,1px);-webkit-clip-path:inset(50%);clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute!important;width:1px;word-wrap:normal!important;word-break:normal}
+.screen-reader-text:focus{background-color:#f7f7f7;border-radius:3px;box-shadow:0 0 2px 2px rgba(0,0,0,.6);clip:auto!important;-webkit-clip-path:none;clip-path:none;color:#007acc;display:block;font-size:14px;font-size:.875rem;font-weight:700;height:auto;right:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}
+.skip-link{left:-9999rem;top:2.5rem;z-index:999999999;text-decoration:underline}
+.skip-link:focus{display:block;left:6px;top:7px;font-size:14px;font-weight:600;text-decoration:none;line-height:normal;padding:15px 23px 14px;z-index:100000;right:auto}
+.visually-hidden:not(:focus):not(:active), .form-allowed-tags:not(:focus):not(:active){position:absolute !important;height:1px;width:1px;overflow:hidden;clip:rect(1px 1px 1px 1px);clip:rect(1px, 1px, 1px, 1px);white-space:nowrap}
+
+/* =============================================
+   PRODUCTOS: PÁGINA DE TAXONOMÍA (producto_cat)
+   Same layout and visual style as blog category.
+   ============================================= */
+
+body.tax-producto_cat main#content[role=main] {
+	--bs-gutter-x: 60px;
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 3.75rem;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	max-width: 1460px;
+	padding-left: 1.875rem !important;
+	padding-right: 1.875rem !important;
+	width: 100%;
+}
+
+/* Category banner header — mirrors blog category header */
+body.tax-producto_cat header.header {
+	background-color: #347490;
+	border-radius: 1.5rem;
+	margin-bottom: 5.625rem;
+	margin-top: 3.75rem;
+	min-height: 288px;
+	position: relative;
+	width: 100%;
+}
+
+body.tax-producto_cat header.header .entry-title {
+	color: #fff;
+	left: 50%;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* Product card — mirrors blog .post card */
+body.tax-producto_cat article.producto {
+	align-content: flex-start;
+	background: #fff;
+	border-radius: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 1.25rem;
+	margin-left: .625rem;
+	margin-right: .625rem;
+	overflow: hidden;
+	width: calc(25% - 20px);
+}
+
+body.tax-producto_cat .producto-card-inner {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+/* Image area: fixed-height container (mirrors .post .entry-summary) */
+body.tax-producto_cat .producto-thumb {
+	flex-shrink: 0;
+	overflow: hidden;
+	padding-bottom: 240px;
+	position: relative;
+	width: 100%;
+}
+
+body.tax-producto_cat .producto-thumb a {
+	bottom: 0;
+	display: block;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+body.tax-producto_cat .producto-thumb a img,
+body.tax-producto_cat .producto-thumb > img {
+	height: 100%;
+	left: 0;
+	object-fit: contain;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+/* Text content area */
+body.tax-producto_cat .producto-content {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	padding: 1rem;
+}
+
+/* Title — override global pointer-events:none on .entry-title a */
+body.tax-producto_cat .producto-title {
+	font-size: inherit;
+	letter-spacing: inherit;
+	margin-top: 0;
+}
+
+body.tax-producto_cat .producto-title a {
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	color: #1a1a1a;
+	display: -webkit-box;
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 1.5rem;
+	overflow: hidden;
+	pointer-events: auto;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+body.tax-producto_cat .producto-title a:hover {
+	color: #347490;
+}
+
+/* Rating stars */
+body.tax-producto_cat .producto-rating {
+	margin-top: .5rem;
+}
+
+body.tax-producto_cat .producto-rating .star {
+	font-size: 1.25rem;
+}
+
+body.tax-producto_cat .producto-rating .star.filled {
+	color: #f5a623;
+}
+
+body.tax-producto_cat .producto-rating .star.empty {
+	color: #ccc;
+}
+
+/* Description */
+body.tax-producto_cat .producto-description {
+	color: #555;
+	flex-grow: 1;
+	font-size: 1rem;
+	line-height: 1.5rem;
+	margin-top: .75rem;
+}
+
+body.tax-producto_cat .producto-description p {
+	margin: 0;
+}
+
+/* "Ver producto" CTA button — mirrors posts-navigation link style */
+body.tax-producto_cat .producto-link {
+	margin-top: 1rem;
+}
+
+body.tax-producto_cat .producto-button {
+	align-items: center;
+	background-color: #347490;
+	border: 1px solid transparent;
+	border-radius: 2.5rem;
+	color: #fff;
+	display: flex;
+	font-size: 1rem;
+	font-weight: 600;
+	height: 54px;
+	justify-content: center;
+	padding-left: 1.25rem;
+	padding-right: 1.25rem;
+	text-decoration: none;
+	transition: all .5s;
+	width: 100%;
+}
+
+body.tax-producto_cat .producto-button:hover {
+	background-color: #fff;
+	border-color: #347490;
+	color: #347490;
+	transition: all .5s;
+}
+
+/* Responsive: 2 columns */
+@media (max-width: 1200px) {
+	body.tax-producto_cat article.producto {
+		width: calc(50% - 20px);
+	}
+}
+
+/* Responsive: 1 column + flat header (mirrors blog mobile) */
+@media (max-width: 768px) {
+	body.tax-producto_cat article.producto {
+		width: calc(100% - 20px);
+	}
+
+	body.tax-producto_cat header.header {
+		border-radius: 0;
+		margin-top: 0;
+	}
+}
+
+/*BRUNO - eliminar descargar fuentes heredadas*/
+@font-face {
+  font-family: 'BodyNormal';
+  src: none; /* Elimina la fuente heredada */
+}
+
+/*Nunito Sans directamente */
+body {
+  font-family: 'Nunito Sans', sans-serif !important;
+}
+/*BRUNO - eliminar descargar fuentes heredadas*/
