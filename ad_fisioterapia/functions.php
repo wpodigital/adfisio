@@ -780,4 +780,84 @@ add_action( 'wp_enqueue_scripts', function () {
 
 }, 999 );
 
+// ─── RENDER-BLOCKING CSS OPTIMIZATION ───────────────────────────────────────
+// Dequeue dashicons on frontend (only needed in wp-admin)
+add_action( 'wp_enqueue_scripts', function () {
+    if ( ! is_user_logged_in() ) {
+        wp_dequeue_style( 'dashicons' );
+        wp_deregister_style( 'dashicons' );
+    }
+}, 999 );
+
+// Defer non-critical CSS using media="print" technique
+// These stylesheets are not needed for initial render / above-the-fold content
+add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
+
+    // List of handles that can be deferred (not critical for first paint)
+    // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG, Swiper, Slick
+    $defer_handles = array(
+        'aos-css',                    // AOS animate-on-scroll
+        'aos',                        // AOS alternate handle
+        'starter-templates-aos',      // AOS via starter templates
+        'wp-pagenavi',                // WP-PageNavi pagination (below fold)
+        'starter-templates-swiper',   // Swiper via Spectra
+        'uagb-swiper-css',            // Swiper via Spectra/UAG
+        'swiper',                     // Swiper generic handle
+        'starter-templates-slick',    // Slick via Spectra
+        'uagb-slick-css',             // Slick via Spectra/UAG
+        'spectra-frontend-css',       // Spectra frontend
+        'starter-starter-templates-css', // Spectra
+        'uagb-block-positioning-css', // Spectra block positioning
+    );
+
+    // Also defer based on URL patterns for handles we might not know
+    $defer_url_patterns = array(
+        '/aos.css',
+        '/aos.min.css',
+        'pagenavi-css.css',
+        'swiper-bundle.min.css',
+        'slick.min.css',
+        'spectra-block-positioning',
+    );
+
+    $should_defer = in_array( $handle, $defer_handles, true );
+
+    if ( ! $should_defer && ! empty( $href ) ) {
+        foreach ( $defer_url_patterns as $pattern ) {
+            if ( strpos( $href, $pattern ) !== false ) {
+                $should_defer = true;
+                break;
+            }
+        }
+    }
+
+    if ( $should_defer ) {
+        // Replace media="all" with media="print" and add onload to switch back
+        $html = str_replace(
+            "media='all'",
+            "media='print' onload=\"this.media='all'\"",
+            $html
+        );
+        // Also handle double-quoted variant
+        $html = str_replace(
+            'media="all"',
+            'media="print" onload="this.media=\'all\'"',
+            $html
+        );
+    }
+
+    return $html;
+}, 10, 3 );
+
+// Defer AOS CSS and JS — only needed after page load for scroll animations
+add_action( 'wp_enqueue_scripts', function () {
+    // If AOS is enqueued, we mark it for deferral (handled by style_loader_tag filter above)
+    // Also defer the AOS JS initialization
+    if ( wp_script_is( 'aos', 'enqueued' ) || wp_script_is( 'aos-js', 'enqueued' ) ) {
+        // AOS JS is already in footer typically, but ensure it
+        wp_script_add_data( 'aos', 'strategy', 'defer' );
+        wp_script_add_data( 'aos-js', 'strategy', 'defer' );
+    }
+}, 1000 );
+
 //BRUNO
