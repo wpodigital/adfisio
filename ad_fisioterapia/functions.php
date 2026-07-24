@@ -852,6 +852,21 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         );
     }
 
+    // Max Mega Menu: only needed for desktop (>1269px).
+    // Set media="(min-width:1270px)" so it does not block render on mobile/tablet.
+    if ( ! empty( $href ) && strpos( $href, 'maxmegamenu' ) !== false ) {
+        $html = str_replace(
+            "media='all'",
+            "media='(min-width:1270px)'",
+            $html
+        );
+        $html = str_replace(
+            'media="all"',
+            'media="(min-width:1270px)"',
+            $html
+        );
+    }
+
     return $html;
 }, 10, 3 );
 
