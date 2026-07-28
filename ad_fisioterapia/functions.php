@@ -807,6 +807,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
     // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG, Swiper, Slick
     $defer_handles = array(
         'blankslate-parent-style',    // Parent theme reset (non-critical, small)
+        'ad-fisioterapia-style',      // Child theme resets/base (non-critical, main.min.css has above-fold styles)
         'aos-css',                    // AOS animate-on-scroll
         'aos',                        // AOS alternate handle
         'starter-templates-aos',      // AOS via starter templates
@@ -846,6 +847,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'font-awesome.css',           // Font Awesome CSS alternate
         'eb-style-',                  // Essential Blocks generated styles
         '/starter-templates/dist/style.css', // Spectra dist/style.css
+        'dist/style.css',             // Spectra dist/style.css (any path variant)
     );
 
     $should_defer = in_array( $handle, $defer_handles, true );
