@@ -815,6 +815,8 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'uagb-slick-css',             // Slick via Spectra/UAG
         'spectra-frontend-css',       // Spectra frontend
         'starter-starter-templates-css', // Spectra
+        'starter-templates-css',         // Spectra dist/style.css
+        'starter-starter-templates-default-css', // Spectra default
         'uagb-block-positioning-css', // Spectra block positioning
         'wp-block-library',           // WP core blocks CSS (not critical)
         'wp-block-library-theme',     // WP core blocks theme CSS
@@ -840,6 +842,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'font-awesome5.css',          // Font Awesome 5 CSS (woff2 is preloaded)
         'font-awesome.css',           // Font Awesome CSS alternate
         'eb-style-',                  // Essential Blocks generated styles
+        '/starter-templates/dist/style.css', // Spectra dist/style.css
     );
 
     $should_defer = in_array( $handle, $defer_handles, true );
@@ -932,5 +935,16 @@ add_action( 'wp_head', function () {
         echo '<link rel="preload" href="' . esc_url( $font_url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
     }
 }, 2 );
+
+// ─── FIX NON-COMPOSITED ANIMATIONS ──────────────────────────────────────────
+// Promote Animate.css and accordion animated elements to GPU compositor layer.
+// This avoids "non-composited animations" Lighthouse warning by ensuring
+// animations run on transform/opacity (composited) instead of layout properties.
+add_action( 'wp_head', function () {
+    echo '<style id="composited-animations-fix">' .
+        '.animated,[class*="animate__"],.eb-accordion-wrapper .eb-accordion-content-wrapper{will-change:transform,opacity;transform:translateZ(0)}' .
+        '.eb-accordion-wrapper .eb-accordion-content-wrapper{overflow:hidden;transition:max-height .35s ease,opacity .35s ease}' .
+        '</style>' . "\n";
+}, 3 );
 
 //BRUNO
