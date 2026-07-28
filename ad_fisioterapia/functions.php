@@ -742,12 +742,14 @@ add_filter( 'wp_resource_hints', function ( $urls, $relation_type ) {
         return $urls;
     }
 
-    // Only allow preconnects to these essential origins (max 4)
+    // Only allow preconnects to these essential origins
     $allowed_origins = array(
         'www.adfisioterapiavalencia.com',
         'fonts.gstatic.com',
         'fonts.googleapis.com',
         'www.googletagmanager.com',
+        'consent.cookiebot.com',
+        'consentcdn.cookiebot.com',
     );
 
     return array_filter(
@@ -804,6 +806,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
     // List of handles that can be deferred (not critical for first paint)
     // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG, Swiper, Slick
     $defer_handles = array(
+        'blankslate-parent-style',    // Parent theme reset (non-critical, small)
         'aos-css',                    // AOS animate-on-scroll
         'aos',                        // AOS alternate handle
         'starter-templates-aos',      // AOS via starter templates
@@ -946,5 +949,23 @@ add_action( 'wp_head', function () {
         '.eb-accordion-wrapper .eb-accordion-content-wrapper{overflow:hidden;transition:max-height .35s ease,opacity .35s ease}' .
         '</style>' . "\n";
 }, 3 );
+
+// ─── COOKIEBOT: BREAK CRITICAL CHAIN ────────────────────────────────────────
+// Ensure Cookiebot uc.js loads async to avoid HTML→JS→settings.json chain.
+// Also emit preconnect hints early so DNS/TLS is resolved in parallel with HTML.
+add_action( 'wp_head', function () {
+    echo '<link rel="preconnect" href="https://consent.cookiebot.com" crossorigin>' . "\n";
+    echo '<link rel="preconnect" href="https://consentcdn.cookiebot.com" crossorigin>' . "\n";
+}, 1 );
+
+add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
+    // Make Cookiebot script async (non-render-blocking) if not already
+    if ( strpos( $src, 'cookiebot.com' ) !== false || strpos( $src, 'consent.cookiebot' ) !== false ) {
+        if ( strpos( $tag, ' async' ) === false && strpos( $tag, ' defer' ) === false ) {
+            $tag = str_replace( ' src=', ' async src=', $tag );
+        }
+    }
+    return $tag;
+}, 10, 3 );
 
 //BRUNO
