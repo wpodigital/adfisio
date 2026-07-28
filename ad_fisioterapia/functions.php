@@ -823,7 +823,9 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'spectra-block-positioning',
         '/uag-css-',                  // Spectra/UAG per-page generated CSS
         '/eb-reusable-',              // Essential Blocks reusable block CSS
+        '/eb-style/',                 // Essential Blocks per-page styles
         'style-blocks.css',           // WP core dist/style-blocks.css
+        'animate.min.css',            // Animate.css (only for scroll animations)
     );
 
     $should_defer = in_array( $handle, $defer_handles, true );
@@ -880,5 +882,41 @@ add_action( 'wp_enqueue_scripts', function () {
         wp_script_add_data( 'aos-js', 'strategy', 'defer' );
     }
 }, 1000 );
+
+// ─── PRELOAD FONT AWESOME WOFF2 ─────────────────────────────────────────────
+// The font file is discovered late (after CSS parse). Preloading eliminates the
+// extra round-trip from the critical chain: HTML→CSS→font becomes HTML→font.
+// We detect the font URL dynamically from the registered font-awesome CSS handle.
+add_action( 'wp_head', function () {
+    global $wp_styles;
+
+    if ( empty( $wp_styles->registered ) ) {
+        return;
+    }
+
+    // Find the Font Awesome CSS src to derive the fonts/ path
+    $fa_src = '';
+    foreach ( $wp_styles->registered as $handle => $style ) {
+        if ( ! empty( $style->src ) && strpos( $style->src, 'font-awesome5' ) !== false ) {
+            $fa_src = $style->src;
+            break;
+        }
+        if ( ! empty( $style->src ) && strpos( $style->src, 'font-awesome' ) !== false ) {
+            $fa_src = $style->src;
+        }
+    }
+
+    if ( ! empty( $fa_src ) ) {
+        // The woff2 lives in ../fonts/fa-solid-900.woff2 relative to css/font-awesome5.css
+        $font_url = str_replace(
+            array( 'css/font-awesome5.css', 'css/font-awesome.css' ),
+            'fonts/fa-solid-900.woff2',
+            $fa_src
+        );
+        // Remove query string if present
+        $font_url = strtok( $font_url, '?' );
+        echo '<link rel="preload" href="' . esc_url( $font_url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+    }
+}, 2 );
 
 //BRUNO
