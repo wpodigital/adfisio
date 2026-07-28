@@ -735,25 +735,33 @@ function add_font_override_css() {
     ' );
 }
 
-// BRUNO: Limitar preconnects
+// BRUNO: Limitar preconnects — keep max 4, only truly critical origins
 add_filter( 'wp_resource_hints', function ( $urls, $relation_type ) {
 
     if ( 'preconnect' !== $relation_type ) {
         return $urls;
     }
 
+    // Only allow preconnects to these essential origins (max 4)
+    $allowed_origins = array(
+        'www.adfisioterapiavalencia.com',
+        'fonts.gstatic.com',
+        'fonts.googleapis.com',
+        'www.googletagmanager.com',
+    );
+
     return array_filter(
         $urls,
-        function ( $url ) {
+        function ( $url ) use ( $allowed_origins ) {
 
             $href = is_array( $url ) ? $url['href'] : $url;
+            $host = wp_parse_url( $href, PHP_URL_HOST );
 
-            return (
-                strpos( $href, 'i0.wp.com' ) === false &&
-                strpos( $href, 'i1.wp.com' ) === false &&
-                strpos( $href, 'i2.wp.com' ) === false &&
-                strpos( $href, 'i3.wp.com' ) === false
-            );
+            if ( empty( $host ) ) {
+                return false;
+            }
+
+            return in_array( $host, $allowed_origins, true );
         }
     );
 
@@ -811,6 +819,9 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'wp-block-library',           // WP core blocks CSS (not critical)
         'wp-block-library-theme',     // WP core blocks theme CSS
         'global-styles',              // WP global styles (theme.json)
+        'jestarter-starter-fa',       // Font Awesome (icons load via preloaded woff2)
+        'jestarter-starter-fa5',      // Font Awesome 5 alternate handle
+        'starter-starter-fa',         // Font Awesome via starter templates
     );
 
     // Also defer based on URL patterns for handles we might not know
@@ -826,6 +837,9 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         '/eb-style/',                 // Essential Blocks per-page styles
         'style-blocks.css',           // WP core dist/style-blocks.css
         'animate.min.css',            // Animate.css (only for scroll animations)
+        'font-awesome5.css',          // Font Awesome 5 CSS (woff2 is preloaded)
+        'font-awesome.css',           // Font Awesome CSS alternate
+        'eb-style-',                  // Essential Blocks generated styles
     );
 
     $should_defer = in_array( $handle, $defer_handles, true );
