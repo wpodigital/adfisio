@@ -435,6 +435,42 @@ add_filter(
 	}
 );
 
+// ─── WP ROCKET: excluir style.css del tema de la optimización CSS ────────────
+// Evita que WP Rocket reescriba las etiquetas <link> que ya diferimos con
+// la técnica media="print" onload en el filtro style_loader_tag.
+
+// 1. Excluir de la combinación/minificación CSS de WP Rocket
+add_filter( 'rocket_exclude_css', function( $excluded ) {
+	$excluded[] = '/blankslate/style.css';
+	$excluded[] = '/ad_fisioterapia/style.css';
+	return $excluded;
+});
+
+// 2. Excluir de "Remove Unused CSS" (RUCSS) de WP Rocket
+add_filter( 'rocket_rucss_excluded_stylesheets', function( $excluded ) {
+	$excluded[] = 'blankslate/style.css';
+	$excluded[] = 'ad_fisioterapia/style.css';
+	return $excluded;
+});
+
+// 3. Fallback: si WP Rocket reescribe el buffer HTML, volvemos a forzar
+//    media="print" en nuestros estilos diferidos después de que WP Rocket termine.
+add_filter( 'rocket_buffer', function( $html ) {
+	// Parent theme style.css
+	$html = preg_replace(
+		'/<link([^>]*id=[\'"]blankslate-parent-style-css[\'"][^>]*)media=[\'"]all[\'"]/i',
+		'<link$1media="print" onload="this.media=\'all\'"',
+		$html
+	);
+	// Child theme style.css
+	$html = preg_replace(
+		'/<link([^>]*id=[\'"]ad-fisioterapia-style-css[\'"][^>]*)media=[\'"]all[\'"]/i',
+		'<link$1media="print" onload="this.media=\'all\'"',
+		$html
+	);
+	return $html;
+}, 99 );
+
 // Cambiar h4 posts de noticias a p
 add_filter(
 	'the_content',
