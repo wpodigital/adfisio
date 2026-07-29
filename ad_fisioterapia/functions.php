@@ -748,8 +748,6 @@ add_filter( 'wp_resource_hints', function ( $urls, $relation_type ) {
         'fonts.gstatic.com',
         'fonts.googleapis.com',
         'www.googletagmanager.com',
-        'consent.cookiebot.com',
-        'consentcdn.cookiebot.com',
     );
 
     return array_filter(
@@ -954,10 +952,11 @@ add_action( 'wp_head', function () {
 
 // ─── COOKIEBOT: BREAK CRITICAL CHAIN ────────────────────────────────────────
 // Ensure Cookiebot uc.js loads async to avoid HTML→JS→settings.json chain.
-// Also emit preconnect hints early so DNS/TLS is resolved in parallel with HTML.
+// Use dns-prefetch (not preconnect) for Cookiebot domains to avoid Lighthouse
+// flagging them as critical-chain <link> elements that penalize LCP.
 add_action( 'wp_head', function () {
-    echo '<link rel="preconnect" href="https://consent.cookiebot.com" crossorigin>' . "\n";
-    echo '<link rel="preconnect" href="https://consentcdn.cookiebot.com" crossorigin>' . "\n";
+    echo '<link rel="dns-prefetch" href="//consent.cookiebot.com">' . "\n";
+    echo '<link rel="dns-prefetch" href="//consentcdn.cookiebot.com">' . "\n";
 }, 1 );
 
 add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
