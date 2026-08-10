@@ -739,6 +739,37 @@ function remove_jquery_migrate( $scripts ) {
 
 	$deps = array_diff( $deps, [ 'jquery-migrate' ] );
 }
+//NUNITO SANS FONT OVERRIDE
+add_action( 'wp_enqueue_scripts', 'add_font_override_css', 999 );
+function add_font_override_css() {
+    $child_uri = get_stylesheet_directory_uri();
+    
+    // Crear un CSS override que se carga después del main.min.css
+    wp_register_style(
+        'font-overrides',
+        false, // No es un archivo, usaremos inline
+        array( 'ad_fisioterapia' ) // Se carga después del CSS principal
+    );
+    wp_enqueue_style( 'font-overrides' );
+    
+    // CSS inline para anular las fuentes problemáticas
+    wp_add_inline_style( 'font-overrides', '
+        /* Eliminar descarga redundante de NunitoSans-Normal.ttf */
+        /* El navegador ignorará esta fuente si ya tiene Nunito Sans */
+        @font-face {
+            font-family: "BodyNormal";
+            src: local("Nunito Sans"), local("NunitoSans-Normal");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        
+        /* Asegurar que todo use Nunito Sans */
+        body, .body-normal, p, h1, h2, h3, h4, h5, h6 {
+            font-family: "Nunito Sans", "BodyNormal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        }
+    ' );
+}
 
 // BRUNO: Limitar preconnects — keep max 4, only truly critical origins
 add_filter( 'wp_resource_hints', function ( $urls, $relation_type ) {
