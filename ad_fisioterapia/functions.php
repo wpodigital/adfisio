@@ -59,27 +59,11 @@ function ad_fisioterapia_enqueue() {
 
 	wp_enqueue_script( 'jquery' );
 
-	// Parent theme CSS
-	wp_enqueue_style(
-		'blankslate-parent-style',
-		$parent_uri . '/style.css',
-		array(),
-		wp_get_theme( get_template() )->get( 'Version' )
-	);
-
-	// Child theme CSS
-	wp_enqueue_style(
-		'ad-fisioterapia-style',
-		get_stylesheet_uri(),
-		array( 'blankslate-parent-style' ),
-		wp_get_theme()->get( 'Version' )
-	);
-
-	// Extra CSS
+	// Extra CSS (main.min.css still loaded as file – it benefits from caching)
 	wp_enqueue_style(
 		'ad_fisioterapia',
 		$child_uri . '/assets/css/build/main.min.css',
-		array( 'ad-fisioterapia-style' ),
+		array(),
 		'1.0'
 	);
 
@@ -99,6 +83,39 @@ function ad_fisioterapia_enqueue() {
 		'1.0',
 		true
 	);
+}
+
+/**
+ * Inline small theme CSS to eliminate render-blocking requests.
+ * Parent (BlankSlate) + child style.css are printed directly in <head>.
+ * Spectra block-positioning (0.5 KiB) is also inlined.
+ */
+add_action( 'wp_enqueue_scripts', 'ad_fisioterapia_inline_critical_css', 20 );
+function ad_fisioterapia_inline_critical_css() {
+	// Dequeue Spectra block-positioning (tiny file, not worth a request)
+	wp_dequeue_style( 'uagb-block-positioning-css' );
+	wp_deregister_style( 'uagb-block-positioning-css' );
+}
+
+add_action( 'wp_head', 'ad_fisioterapia_print_inline_css', 8 );
+function ad_fisioterapia_print_inline_css() {
+	// Parent theme CSS (BlankSlate)
+	$parent_css_path = get_template_directory() . '/style.css';
+	if ( file_exists( $parent_css_path ) ) {
+		echo '<style id="blankslate-parent-inline">' . file_get_contents( $parent_css_path ) . '</style>' . "\n";
+	}
+
+	// Child theme CSS
+	$child_css_path = get_stylesheet_directory() . '/style.css';
+	if ( file_exists( $child_css_path ) ) {
+		echo '<style id="ad-fisioterapia-inline">' . file_get_contents( $child_css_path ) . '</style>' . "\n";
+	}
+
+	// Spectra block-positioning inline
+	$spectra_path = WP_PLUGIN_DIR . '/ultimate-addons-for-gutenberg/assets/css/spectra-block-positioning.min.css';
+	if ( file_exists( $spectra_path ) ) {
+		echo '<style id="spectra-positioning-inline">' . file_get_contents( $spectra_path ) . '</style>' . "\n";
+	}
 }
 
 // Load Styles & Scripts to Admin
