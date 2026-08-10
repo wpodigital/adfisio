@@ -850,8 +850,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
     // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG, Swiper, Slick
     $defer_handles = array(
         'blankslate-parent-style',    // Parent theme reset (non-critical, small)
-        'ad-fisioterapia-style',      // Child theme resets/base (non-critical, main.min.css has above-fold styles)
-        'ad_fisioterapia',            // main.min.css (deferred, non-critical)
+        'ad-fisioterapia-style',      // Child theme resets/base (non-critical)
         'aos-css',                    // AOS animate-on-scroll
         'aos',                        // AOS alternate handle
         'starter-templates-aos',      // AOS via starter templates
@@ -995,6 +994,15 @@ add_action( 'wp_head', function () {
         '.eb-accordion-wrapper .eb-accordion-content-wrapper{overflow:hidden;transition:max-height .35s ease,opacity .35s ease}' .
         '</style>' . "\n";
 }, 3 );
+
+// ─── LCP PRELOAD: Emit preload for the YouTube thumbnail (LCP element) ──────
+// The image is discovered late because it's embedded in page content.
+// Preloading from <head> eliminates the 1s+ element render delay.
+add_action( 'wp_head', function () {
+    if ( is_front_page() || is_home() ) {
+        echo '<link rel="preload" as="image" href="https://i.ytimg.com/vi/ynjfAxp-64E/hqdefault.jpg" fetchpriority="high">' . "\n";
+    }
+}, 1 );
 
 // ─── COOKIEBOT: BREAK CRITICAL CHAIN ────────────────────────────────────────
 // Ensure Cookiebot uc.js loads async to avoid HTML→JS→settings.json chain.
