@@ -860,14 +860,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'swiper',                     // Swiper generic handle
         'starter-templates-slick',    // Slick via Spectra
         'uagb-slick-css',             // Slick via Spectra/UAG
-        'spectra-frontend-css',       // Spectra frontend
-        'starter-starter-templates-css', // Spectra
-        'starter-templates-css',         // Spectra dist/style.css
-        'starter-starter-templates-default-css', // Spectra default
-        'uagb-block-positioning-css', // Spectra block positioning
-        'wp-block-library',           // WP core blocks CSS (not critical)
-        'wp-block-library-theme',     // WP core blocks theme CSS
-        'global-styles',              // WP global styles (theme.json)
+        'wp-block-library-theme',     // WP core blocks theme CSS (decorative only)
         'jestarter-starter-fa',       // Font Awesome (icons load via preloaded woff2)
         'jestarter-starter-fa5',      // Font Awesome 5 alternate handle
         'starter-starter-fa',         // Font Awesome via starter templates
@@ -880,17 +873,10 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         'pagenavi-css.css',
         'swiper-bundle.min.css',
         'slick.min.css',
-        'spectra-block-positioning',
-        '/uag-css-',                  // Spectra/UAG per-page generated CSS
-        '/eb-reusable-',              // Essential Blocks reusable block CSS
-        '/eb-style/',                 // Essential Blocks per-page styles
         'style-blocks.css',           // WP core dist/style-blocks.css
         'animate.min.css',            // Animate.css (only for scroll animations)
         'font-awesome5.css',          // Font Awesome 5 CSS (woff2 is preloaded)
         'font-awesome.css',           // Font Awesome CSS alternate
-        'eb-style-',                  // Essential Blocks generated styles
-        '/starter-templates/dist/style.css', // Spectra dist/style.css
-        'dist/style.css',             // Spectra dist/style.css (any path variant)
     );
 
     $should_defer = in_array( $handle, $defer_handles, true );
