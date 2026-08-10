@@ -761,20 +761,30 @@ function add_font_override_css() {
     wp_enqueue_style( 'font-overrides' );
     
     // CSS inline para anular las fuentes problemáticas
+    // font-display:optional evita CLS: si la fuente no está en caché, usa el fallback sin swap.
     wp_add_inline_style( 'font-overrides', '
+        /* Fallback con size-adjust para evitar CLS mientras carga Nunito Sans */
+        @font-face {
+            font-family: "Nunito Sans Fallback";
+            src: local("Arial");
+            size-adjust: 100.3%;
+            ascent-override: 99%;
+            descent-override: 22%;
+            line-gap-override: 0%;
+        }
+
         /* Eliminar descarga redundante de NunitoSans-Normal.ttf */
-        /* El navegador ignorará esta fuente si ya tiene Nunito Sans */
         @font-face {
             font-family: "BodyNormal";
             src: local("Nunito Sans"), local("NunitoSans-Normal");
             font-weight: 400;
             font-style: normal;
-            font-display: swap;
+            font-display: optional;
         }
         
-        /* Asegurar que todo use Nunito Sans */
+        /* Asegurar que todo use Nunito Sans con fallback ajustado */
         body, .body-normal, p, h1, h2, h3, h4, h5, h6 {
-            font-family: "Nunito Sans", "BodyNormal", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-family: "Nunito Sans", "BodyNormal", "Nunito Sans Fallback", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
         }
     ' );
 }
@@ -850,7 +860,6 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
     // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG, Swiper, Slick
     $defer_handles = array(
         'blankslate-parent-style',    // Parent theme reset (non-critical, small)
-        'ad-fisioterapia-style',      // Child theme resets/base (non-critical)
         'aos-css',                    // AOS animate-on-scroll
         'aos',                        // AOS alternate handle
         'starter-templates-aos',      // AOS via starter templates
