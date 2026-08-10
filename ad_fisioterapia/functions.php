@@ -443,6 +443,7 @@ add_filter(
 add_filter( 'rocket_exclude_css', function( $excluded ) {
 	$excluded[] = '/blankslate/style.css';
 	$excluded[] = '/ad_fisioterapia/style.css';
+	$excluded[] = '/ad_fisioterapia/assets/css/build/main.min.css';
 	return $excluded;
 });
 
@@ -450,6 +451,7 @@ add_filter( 'rocket_exclude_css', function( $excluded ) {
 add_filter( 'rocket_rucss_excluded_stylesheets', function( $excluded ) {
 	$excluded[] = 'blankslate/style.css';
 	$excluded[] = 'ad_fisioterapia/style.css';
+	$excluded[] = 'main.min.css';
 	return $excluded;
 });
 
@@ -468,8 +470,14 @@ add_filter( 'rocket_buffer', function( $html ) {
 		'<link$1media="print" onload="this.media=\'all\'"',
 		$html
 	);
+	// main.min.css
+	$html = preg_replace(
+		'/<link([^>]*id=[\'"]ad_fisioterapia-css[\'"][^>]*)media=[\'"]all[\'"]/i',
+		'<link$1media="print" onload="this.media=\'all\'"',
+		$html
+	);
 	return $html;
-}, 99 );
+}, PHP_INT_MAX );
 
 // Cambiar h4 posts de noticias a p
 add_filter(
@@ -779,10 +787,11 @@ add_filter( 'wp_resource_hints', function ( $urls, $relation_type ) {
     }
 
     // Only allow preconnects to these essential origins
+    // Note: fonts.gstatic.com and fonts.googleapis.com removed because
+    // Google Fonts are dequeued (line ~806) so the preconnect is wasted.
     $allowed_origins = array(
         'www.adfisioterapiavalencia.com',
-        'fonts.gstatic.com',
-        'fonts.googleapis.com',
+        'i.ytimg.com',
         'www.googletagmanager.com',
     );
 
@@ -842,6 +851,7 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
     $defer_handles = array(
         'blankslate-parent-style',    // Parent theme reset (non-critical, small)
         'ad-fisioterapia-style',      // Child theme resets/base (non-critical, main.min.css has above-fold styles)
+        'ad_fisioterapia',            // main.min.css (deferred, non-critical)
         'aos-css',                    // AOS animate-on-scroll
         'aos',                        // AOS alternate handle
         'starter-templates-aos',      // AOS via starter templates
@@ -1004,5 +1014,37 @@ add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
     }
     return $tag;
 }, 10, 3 );
+
+// ─── LCP FIX: Excluir thumbnail de YouTube del lazy-load de WP Rocket ────────
+// La imagen LCP no debe tener lazy-load ya que eso añade >1s de retraso de renderizado.
+// WP Rocket usa data-lazy-src; este filtro excluye imágenes de ytimg.com.
+add_filter( 'rocket_lazyload_excluded_attributes', function( $excluded ) {
+	$excluded[] = 'data-lazy-src="https://i.ytimg.com';
+	return $excluded;
+});
+
+// Excluir imágenes de YouTube del lazy-load por src pattern
+add_filter( 'rocket_lazyload_excluded_src', function( $excluded ) {
+	$excluded[] = 'i.ytimg.com';
+	return $excluded;
+});
+
+// Fallback: en el buffer de salida, restaurar src en la imagen LCP de ytimg
+// y añadir fetchpriority="high" para que el navegador la priorice.
+add_filter( 'rocket_buffer', function( $html ) {
+	// Find ytimg images that WP Rocket lazy-loaded and restore them
+	$html = preg_replace(
+		'/<img([^>]*?)data-lazy-src=[\'"]([^"\']*i\.ytimg\.com[^"\']*)[\'"]([^>]*?)src=[\'"][^"\']*[\'"]([^>]*?)>/i',
+		'<img$1src="$2"$3$4 fetchpriority="high">',
+		$html
+	);
+	// Also handle case where src comes before data-lazy-src
+	$html = preg_replace(
+		'/<img([^>]*?)src=[\'"][^"\']*[\'"]([^>]*?)data-lazy-src=[\'"]([^"\']*i\.ytimg\.com[^"\']*)[\'"]([^>]*?)>/i',
+		'<img$1src="$3"$2$4 fetchpriority="high">',
+		$html
+	);
+	return $html;
+}, PHP_INT_MAX );
 
 //BRUNO
