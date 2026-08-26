@@ -105,7 +105,7 @@ add_action( 'wp_head', 'ad_fisioterapia_cls_fix_desktop', 5 );
 function ad_fisioterapia_cls_fix_desktop() {
 	?>
 	<style id="cls-fix-desktop">
-	@media (min-width: 1271px) {
+	@media (min-width: 1270px) {
 		#header .container-header { min-height: 84px; }
 		#branding { width: 252px; flex-shrink: 0; }
 		#branding img { aspect-ratio: 252 / 55; }
