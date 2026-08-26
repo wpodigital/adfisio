@@ -97,27 +97,6 @@ function ad_fisioterapia_inline_critical_css() {
 	wp_deregister_style( 'uagb-block-positioning-css' );
 }
 
-add_action( 'wp_head', 'ad_fisioterapia_print_inline_css', 8 );
-function ad_fisioterapia_print_inline_css() {
-	// Parent theme CSS (BlankSlate)
-	$parent_css_path = get_template_directory() . '/style.css';
-	if ( file_exists( $parent_css_path ) ) {
-		echo '<style id="blankslate-parent-inline">' . file_get_contents( $parent_css_path ) . '</style>' . "\n";
-	}
-
-	// Child theme CSS
-	$child_css_path = get_stylesheet_directory() . '/style.css';
-	if ( file_exists( $child_css_path ) ) {
-		echo '<style id="ad-fisioterapia-inline">' . file_get_contents( $child_css_path ) . '</style>' . "\n";
-	}
-
-	// Spectra block-positioning inline
-	$spectra_path = WP_PLUGIN_DIR . '/ultimate-addons-for-gutenberg/assets/css/spectra-block-positioning.min.css';
-	if ( file_exists( $spectra_path ) ) {
-		echo '<style id="spectra-positioning-inline">' . file_get_contents( $spectra_path ) . '</style>' . "\n";
-	}
-}
-
 // Load Styles & Scripts to Admin
 add_action( 'admin_enqueue_scripts', 'ad_fisioterapia_admin_styles' );
 function ad_fisioterapia_admin_styles() {
@@ -471,30 +450,6 @@ add_filter( 'rocket_rucss_excluded_stylesheets', function( $excluded ) {
 	$excluded[] = 'main.min.css';
 	return $excluded;
 });
-
-// 3. Fallback: si WP Rocket reescribe el buffer HTML, volvemos a forzar
-//    media="print" en nuestros estilos diferidos después de que WP Rocket termine.
-add_filter( 'rocket_buffer', function( $html ) {
-	// Parent theme style.css
-	$html = preg_replace(
-		'/<link([^>]*id=[\'"]blankslate-parent-style-css[\'"][^>]*)media=[\'"]all[\'"]/i',
-		'<link$1media="print" onload="this.media=\'all\'"',
-		$html
-	);
-	// Child theme style.css
-	$html = preg_replace(
-		'/<link([^>]*id=[\'"]ad-fisioterapia-style-css[\'"][^>]*)media=[\'"]all[\'"]/i',
-		'<link$1media="print" onload="this.media=\'all\'"',
-		$html
-	);
-	// main.min.css
-	$html = preg_replace(
-		'/<link([^>]*id=[\'"]ad_fisioterapia-css[\'"][^>]*)media=[\'"]all[\'"]/i',
-		'<link$1media="print" onload="this.media=\'all\'"',
-		$html
-	);
-	return $html;
-}, PHP_INT_MAX );
 
 // Cambiar h4 posts de noticias a p
 add_filter(
@@ -1048,23 +1003,5 @@ add_filter( 'rocket_lazyload_excluded_src', function( $excluded ) {
 	$excluded[] = 'i.ytimg.com';
 	return $excluded;
 });
-
-// Fallback: en el buffer de salida, restaurar src en la imagen LCP de ytimg
-// y añadir fetchpriority="high" para que el navegador la priorice.
-add_filter( 'rocket_buffer', function( $html ) {
-	// Find ytimg images that WP Rocket lazy-loaded and restore them
-	$html = preg_replace(
-		'/<img([^>]*?)data-lazy-src=[\'"]([^"\']*i\.ytimg\.com[^"\']*)[\'"]([^>]*?)src=[\'"][^"\']*[\'"]([^>]*?)>/i',
-		'<img$1src="$2"$3$4 fetchpriority="high">',
-		$html
-	);
-	// Also handle case where src comes before data-lazy-src
-	$html = preg_replace(
-		'/<img([^>]*?)src=[\'"][^"\']*[\'"]([^>]*?)data-lazy-src=[\'"]([^"\']*i\.ytimg\.com[^"\']*)[\'"]([^>]*?)>/i',
-		'<img$1src="$3"$2$4 fetchpriority="high">',
-		$html
-	);
-	return $html;
-}, PHP_INT_MAX );
 
 //BRUNO
