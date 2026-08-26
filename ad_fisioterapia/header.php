@@ -21,7 +21,9 @@
                 <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
                     <img
                         src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/logo.svg"
-                        alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+                        alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
+                        width="252"
+                        height="55">
                 </a>
             </div>
 

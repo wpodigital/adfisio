@@ -97,6 +97,23 @@ function ad_fisioterapia_inline_critical_css() {
 	wp_deregister_style( 'uagb-block-positioning-css' );
 }
 
+/**
+ * Desktop-only CLS fix: reserve header height so content doesn't shift
+ * while fonts/images load. Only applies above 1271px (desktop nav visible).
+ */
+add_action( 'wp_head', 'ad_fisioterapia_cls_fix_desktop', 5 );
+function ad_fisioterapia_cls_fix_desktop() {
+	?>
+	<style id="cls-fix-desktop">
+	@media (min-width: 1271px) {
+		#header .container-header { min-height: 84px; }
+		#branding { width: 252px; flex-shrink: 0; }
+		#branding img { aspect-ratio: 252 / 55; }
+	}
+	</style>
+	<?php
+}
+
 // Load Styles & Scripts to Admin
 add_action( 'admin_enqueue_scripts', 'ad_fisioterapia_admin_styles' );
 function ad_fisioterapia_admin_styles() {
