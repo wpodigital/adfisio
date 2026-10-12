@@ -872,6 +872,11 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
 
     $should_defer = in_array( $handle, $defer_handles, true );
 
+    // Never defer Spectra/UAG CSS: the slider and carousel blocks break (stacked slides)
+    if ( ! empty( $href ) && ( strpos( $href, 'spectra-pro' ) !== false || strpos( $href, 'ultimate-addons-for-gutenberg' ) !== false ) ) {
+        return $html;
+    }
+
     if ( ! $should_defer && ! empty( $href ) ) {
         foreach ( $defer_url_patterns as $pattern ) {
             if ( strpos( $href, $pattern ) !== false ) {
