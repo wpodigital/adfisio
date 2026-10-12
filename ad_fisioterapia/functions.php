@@ -846,18 +846,13 @@ add_action( 'wp_enqueue_scripts', function () {
 add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
 
     // List of handles that can be deferred (not critical for first paint)
-    // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG, Swiper, Slick
+    // Covers common handle names used by AOS, WP-PageNavi, Spectra/UAG (Swiper/Slick CSS must NOT be deferred: sliders break)
     $defer_handles = array(
         'blankslate-parent-style',    // Parent theme reset (non-critical, small)
         'aos-css',                    // AOS animate-on-scroll
         'aos',                        // AOS alternate handle
         'starter-templates-aos',      // AOS via starter templates
         'wp-pagenavi',                // WP-PageNavi pagination (below fold)
-        'starter-templates-swiper',   // Swiper via Spectra
-        'uagb-swiper-css',            // Swiper via Spectra/UAG
-        'swiper',                     // Swiper generic handle
-        'starter-templates-slick',    // Slick via Spectra
-        'uagb-slick-css',             // Slick via Spectra/UAG
         'wp-block-library-theme',     // WP core blocks theme CSS (decorative only)
         'jestarter-starter-fa',       // Font Awesome (icons load via preloaded woff2)
         'jestarter-starter-fa5',      // Font Awesome 5 alternate handle
@@ -869,8 +864,6 @@ add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
         '/aos.css',
         '/aos.min.css',
         'pagenavi-css.css',
-        'swiper-bundle.min.css',
-        'slick.min.css',
         'style-blocks.css',           // WP core dist/style-blocks.css
         'animate.min.css',            // Animate.css (only for scroll animations)
         'font-awesome5.css',          // Font Awesome 5 CSS (woff2 is preloaded)
